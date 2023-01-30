@@ -16,8 +16,6 @@ jobs:
       BAZEL: bazelisk-linux-amd64
     steps:
     - uses: actions/checkout@v2
-      with:
-        submodules: recursive
     - name: Compute hour of the day.
       id: hour
       run: echo "::set-output name=number::$(date +%H)"
