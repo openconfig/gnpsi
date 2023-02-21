@@ -23,7 +23,7 @@ def gnpsi_deps():
             name = "com_github_grpc_grpc",
             url = "https://github.com/grpc/grpc/archive/refs/tags/v1.43.2.tar.gz",
             strip_prefix = "grpc-1.43.2",
-            sha256 = "8b1cddccdcbfc399310b4563bb43ac95d22cd6c819af766621ea369a72006b11",
+            sha256 = "b74ce7d26fe187970d1d8e2c06a5d3391122f7bc1fdce569aff5e435fb8fe780",
         )
     if not native.existing_rule("com_google_protobuf"):
         http_archive(
