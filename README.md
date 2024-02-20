@@ -6,8 +6,9 @@ Our objective is to design an API for streaming packet samples from switches to 
 
 * infrastructure UDP transport creates significant challenges around losses (for which we need a well-defined SLO around), especially when the network is under stress which might be when we care most about telemetry. 
 * the channel is neither encrypted nor authenticated providing an opening for man-in-the-middle attack if the data is used for core traffic engineering.
-* relies on VIP for discovery that has significant blast radius, which is of concern when data is used for real-time traffic engineering
-* UDP also complicates the deployment and design of the collection system to account for transport of unencrypted packets.
+* relies on VIP for discovery that has significant blast radius, which is of concern when data is used for real-time traffic engineering.
+* the dial-out only approach is also incompatible when security requires a 'dial-in' approach, where the collector is needed to initiate a connection to the device.
+* UDP also complicates the deployment and design of the collection system to account for transport of unencrypted packets. Implementation of security requirements for encryption and use of proxies are complicated when multiple wire protocols are used for encapsulation.
 
 ## Background
 
@@ -30,62 +31,9 @@ Have single gNSI RPC's in the service and include typing in response
   * Requires the most business logic on the collector and agent to handle how errors handled for requests for a protocol that isn't configured or supported is handled.
 
 
-```protobuf
-service gNPSI {
-  // gNPSI subscription allows client to subscribe to SFlow/NetFlow/IPFIX
-  // updates from the device.  Past updates, i.e., updates before the
-  // subscription is received, will not be presented to the subscribing client.
-  rpc Subscribe(Request) returns (stream Sample);
-}
+### Proto
+See [proto](https://github.com/openconfig/gnpsi/tree/main/proto)
 
-message SFlowMetadata {
-  enum Version {
-    UNSPECIFIED = 0;
-    V2 = 1;
-    V5 = 2;
-  }
-  Version version = 1;
-}
-
-message NetFlowMetadata {
-  enum Version {
-    UNSPECIFIED = 0;
-    V1 = 1;
-    V5 = 2;
-    V7 = 3;
-    V9 = 4;
-  }
-  Version version = 1;
-}
-
-message IPFIXMetadata {
-  enum Version {
-    UNSPECIFIED = 0;
-    V10 = 1;
-  }
-  Version version = 1;
-}
-
-message Request {}
-
-message Sample {
-  // Payload of the sample.
-  bytes packet = 1;
-
-  // Last timestamp of sample payload (ns since epoch)
-  int64 timestamp = 2;
-
-  // Only one of these metadata will be populated to correspond to the sample
-  // returned.
-  //
-  // The metadata fields applies to all messages on this stream, and would only
-  // be present in the first message on the stream.
-  SFlowMetadata sflow_metadata = 101;
-  NetFlowMetadata netflow_metadata = 102;
-  IPFIXMetadata ipfix_metadata = 103;
-}
-
-```
 
 ## Service Discovery
 
