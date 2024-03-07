@@ -1,0 +1,67 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Supporting infrastructure for implementing and testing PINS.
+
+package(
+    default_visibility = ["//visibility:public"],
+    licenses = ["notice"],
+)
+
+cc_library(
+    name = "gnpsi_service_impl",
+    srcs = ["gnpsi_service_impl.cc"],
+    hdrs = ["gnpsi_service_impl.h"],
+    deps = [
+        "//proto/gnpsi:gnpsi_cc_proto",
+        "//proto/gnpsi:gnpsi_grpc_proto",
+        "@com_github_google_glog//:glog",
+        "@com_github_grpc_grpc//:grpc++",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/synchronization",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+cc_library(
+    name = "gnpsi_relay_server",
+    srcs = ["gnpsi_relay_server.cc"],
+    hdrs = ["gnpsi_relay_server.h"],
+    deps = [
+        ":gnpsi_service_impl",
+        "@com_github_google_glog//:glog",
+    ],
+)
+
+cc_library(
+    name = "mock_gnpsi_service",
+    testonly = True,
+    hdrs = ["mock_gnpsi_service_impl.h"],
+    deps = [
+        ":gnpsi_service_impl",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_test(
+    name = "gnpsi_relay_server_test",
+    srcs = ["gnpsi_relay_server_test.cc"],
+    deps = [
+        ":gnpsi_relay_server",
+        ":mock_gnpsi_service",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#    http:#www.apache.org/licenses/LICENSE-2.0
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,10 @@
 #
 
 #!/bin/bash
-set -euo pipefail
 
 
-# Go
-for p in gnpsi; do
-  protoc --go-grpc_out=. --go-grpc_opt=paths=source_relative --go_out=. --go_opt=paths=source_relative proto/$p/$p.proto
-done
+# Cpp
+PROTO_DIR="proto/gnpsi"
+protoc -I $PROTO_DIR --grpc_out=$PROTO_DIR --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` $PROTO_DIR/gnpsi.proto
+protoc -I $PROTO_DIR --cpp_out=$PROTO_DIR $PROTO_DIR/gnpsi.proto
 

@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Supporting infrastructure for implementing and testing PINS.
-#
 
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 
+# gnpsi defines a gRPC-based network packet sampling interface implemented on
+# vendor network elements. It provides mechanisms for streaming packet
+# samples/updates from the network element.
 package(
     default_visibility = ["//visibility:public"],
     licenses = ["notice"],
@@ -25,10 +26,21 @@ package(
 proto_library(
     name = "gnpsi_proto",
     srcs = ["gnpsi.proto"],
-    import_prefix = "github.com/openconfig/gnpsi",
+    deps = [
+        "@com_google_protobuf//:any_proto",
+        "@com_google_protobuf//:descriptor_proto",
+    ],
 )
 
 cc_proto_library(
     name = "gnpsi_cc_proto",
     deps = [":gnpsi_proto"],
+)
+
+cc_grpc_library(
+    name = "gnpsi_grpc_proto",
+    srcs = [":gnpsi_proto"],
+    generate_mocks = True,
+    grpc_only = ["True"],
+    deps = [":gnpsi_cc_proto"],
 )

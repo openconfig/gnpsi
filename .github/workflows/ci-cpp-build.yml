@@ -31,7 +31,7 @@ jobs:
           bazel-${{ runner.os }}-build-
     - name: Install bazelisk
       run: |
-        curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.8.1/$BAZEL"
+        curl -LO "https://github.com/bazelbuild/bazelisk/releases/download/v1.17.0/$BAZEL"
         chmod +x $BAZEL
         sudo mv $BAZEL /usr/local/bin/bazel
     - name: Build
