@@ -51,6 +51,7 @@ int SetUpReadSocket(int port, int addr_family,
     socket_provider->Close(socket_fd);
     return -1;
   }
+  return 1;
   return socket_fd;
 }
 
