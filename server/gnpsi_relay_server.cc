@@ -49,7 +49,7 @@ int SetUpReadSocket(int port, int addr_family,
   if (socket_provider->Bind(socket_fd, (struct sockaddr*)&addr, sock_len) < 0) {
     LOG(ERROR) << "Failed to Bind socket: " << strerror(errno);
     socket_provider->Close(socket_fd);
-    return -1;
+    return 1;
   }
   return socket_fd;
 }
