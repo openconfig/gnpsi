@@ -2,17 +2,59 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "absl/base/thread_annotations.h"
 #include "glog/logging.h"
 #include "absl/status/status.h"
+#include "absl/strings/match.h"
+#include "absl/strings/numbers.h"
 #include "absl/strings/str_cat.h"
+#include "absl/strings/string_view.h"
+#include "absl/strings/strip.h"
 #include "absl/synchronization/mutex.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
 #include "proto/gnpsi/gnpsi.pb.h"
 
 namespace gnpsi {
+
+absl::Status GnpsiConnection::InitializeStats() {
+  std::string uri = this->GetPeerName();
+  LOG(INFO) << "uri: " << uri;
+  absl::string_view ip;
+  int port;
+  if (absl::StartsWith(uri, kIpv4Indicator)) {
+    absl::string_view path =
+        absl::StripPrefix(uri, absl::StrCat(kIpv4Indicator, ":"));
+    if (int colon = path.find(':'); colon != absl::string_view::npos) {
+      ip = path.substr(0, colon);
+      if (!absl::SimpleAtoi(path.substr(colon + 1), &port)) {
+        return absl::InternalError(
+            "Error retrieving port information from uri string");
+      }
+      this->stats_ = GnpsiStats(ip, port);
+      return absl::OkStatus();
+    }
+    return absl::NotFoundError("Port not found in uri string");
+  }
+  if (absl::StartsWith(uri, kIpv6Indicator)) {
+    absl::string_view path =
+        absl::StripPrefix(uri, absl::StrCat(kIpv6Indicator, ":%5B"));
+    if (int closing_bracket = path.find("%5D");
+        closing_bracket != absl::string_view::npos) {
+      ip = path.substr(0, closing_bracket);
+      if (!absl::SimpleAtoi(path.substr(closing_bracket + 4), &port)) {
+        return absl::InternalError(
+            "Error retrieving port information from uri string");
+      }
+      this->stats_ = GnpsiStats(ip, port);
+      return absl::OkStatus();
+    }
+    return absl::NotFoundError("Port not found in uri string");
+  }
+  return absl::InvalidArgumentError("The passed URI format is not supported");
+}
 
 void GnpsiConnection::WaitUntilClosed() {
   absl::MutexLock l(&mu_);
@@ -71,6 +113,10 @@ absl::Status GnpsiServiceImpl::AddConnection(GnpsiConnection* connection) {
                      client_max_number_, " clients."));
   }
   LOG(INFO) << "Add " << connection->GetPeerName() << " to client list.";
+  if (absl::Status status = connection->InitializeStats(); !status.ok()) {
+    LOG(ERROR) << "Error while creating stats object for peer - "
+               << status.message();
+  }
   gnpsi_connections_.push_back(connection);
   return absl::OkStatus();
 }
@@ -113,13 +159,25 @@ void GnpsiServiceImpl::SendSamplePacket(
         connection->SendResponse(response)) {
       VLOG(1) << "Successfully sent sample packet to "
               << connection->GetPeerName() << ".";
+      connection->IncrementDatagramCount();
+      connection->IncrementBytesSampled(sample_packet.size());
     } else {
       // If it fails to send response to any client, close this connection.
       LOG(ERROR) << "Failed to send sample packet to "
                  << connection->GetPeerName() << ".";
+      connection->IncrementWriteErrorCount();
       connection->CloseStream();
     }
   }
 }
 
+std::vector<GnpsiStats> GnpsiServiceImpl::GetStats() {
+  absl::MutexLock l(&mu_);
+  std::vector<GnpsiStats> stats;
+  for (auto it = gnpsi_connections_.begin(), end = gnpsi_connections_.end();
+       it != end; it++) {
+    stats.push_back((*it)->GetConnectionStats());
+  }
+  return stats;
+}
 }  // namespace gnpsi
