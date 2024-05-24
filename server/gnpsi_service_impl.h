@@ -47,6 +47,7 @@ class GnpsiSenderInterface {
       const std::string& sample_packet,
       SFlowMetadata::Version version = SFlowMetadata::V5) = 0;
   virtual void DrainConnections() = 0;
+  virtual void UndrainConnections() = 0;
   virtual std::vector<GnpsiStats> GetStats() = 0;
 };
 
@@ -130,6 +131,9 @@ class GnpsiServiceImpl : public ::gnpsi::gNPSI::Service,
 
   // Closes all current conections and blocks any new incoming connections.
   void DrainConnections() ABSL_LOCKS_EXCLUDED(mu_) override;
+
+  // Resumes the service and allows new connections.
+  void UndrainConnections() ABSL_LOCKS_EXCLUDED(mu_) override;
 
   // Returns stats per connection collected by the server.
   std::vector<GnpsiStats> GetStats() ABSL_LOCKS_EXCLUDED(mu_) override;
