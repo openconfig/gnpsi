@@ -14,6 +14,7 @@ class MockGnpsiServiceImpl : public GnpsiSenderInterface {
                SFlowMetadata::Version version),
               (override));
   MOCK_METHOD(void, DrainConnections, (), (override));
+  MOCK_METHOD(void, UndrainConnections, (), (override));
   MOCK_METHOD(std::vector<GnpsiStats>, GetStats, (), (override));
 };
 }  // namespace gnpsi

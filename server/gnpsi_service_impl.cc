@@ -145,6 +145,11 @@ void GnpsiServiceImpl::DrainConnections() {
   }
 }
 
+void GnpsiServiceImpl::UndrainConnections() {
+  absl::MutexLock lock(&mu_);
+  service_drained_ = false;
+}
+
 void GnpsiServiceImpl::SendSamplePacket(
     const std::string& sample_packet, ::gnpsi::SFlowMetadata::Version version) {
   absl::MutexLock l(&mu_);
