@@ -17,7 +17,6 @@ syntax = "proto3";
 
 option go_package = "github.com/openconfig/gnpsi/proto/gnpsi";
 
-
 // Package gNPSI defines a service specification for the gRPC Network Packet
 // Sampling Interface. This interface is defined to be a standard interface via
 // which a telemetry system ("client") can subscribe to sampling updates from a
@@ -63,6 +62,14 @@ message IPFIXMetadata {
 
 message Request {}
 
+// gNPSI sample that can contain SFlow/NetFlow/IPFIX data.
+//
+// When the sflow_metadata is set, the `packet` field within the sample contains
+// an sFlow datagram.
+// When the netflow_metadata is set, the `packet` field within the sample
+// contains a NetFlow datagram.
+// When the ipfix_metadata is set, the `packet` field within the sample contains
+// an IPFIX message.
 message Sample {
   // Payload of the sample.
   bytes packet = 1;
