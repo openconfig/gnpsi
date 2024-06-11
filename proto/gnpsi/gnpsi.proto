@@ -15,8 +15,6 @@
 //
 syntax = "proto3";
 
-option go_package = "github.com/openconfig/gnpsi/proto/gnpsi";
-
 // Package gNPSI defines a service specification for the gRPC Network Packet
 // Sampling Interface. This interface is defined to be a standard interface via
 // which a telemetry system ("client") can subscribe to sampling updates from a
@@ -24,6 +22,8 @@ option go_package = "github.com/openconfig/gnpsi/proto/gnpsi";
 // ("target").
 //
 package gnpsi;
+
+option go_package = "github.com/openconfig/gnpsi/proto/gnpsi";
 
 service gNPSI {
   // gNPSI subscription allows client to subscribe to SFlow/NetFlow/IPFIX
