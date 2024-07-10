@@ -18,53 +18,87 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def gnpsi_deps():
     """Declare the third-party dependencies necessary to build gnpsi"""
+    if not native.existing_rule("rules_proto_grpc"):
+        http_archive(
+            name = "rules_proto_grpc",
+            sha256 = "2a0860a336ae836b54671cbbe0710eec17c64ef70c4c5a88ccfd47ea6e3739bd",
+            strip_prefix = "rules_proto_grpc-4.6.0",
+            urls = ["https://github.com/rules-proto-grpc/rules_proto_grpc/releases/download/4.6.0/rules_proto_grpc-4.6.0.tar.gz"],
+        )
+    if not native.existing_rule("bazel_features"):
+        http_archive(
+            name = "bazel_features",
+            sha256 = "2cd9e57d4c38675d321731d65c15258f3a66438ad531ae09cb8bb14217dc8572",
+            strip_prefix = "bazel_features-1.11.0",
+            url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.11.0/bazel_features-v1.11.0.tar.gz",
+        )
+    if not native.existing_rule("rules_proto"):
+        http_archive(
+            name = "rules_proto",
+            sha256 = "6fb6767d1bef535310547e03247f7518b03487740c11b6c6adb7952033fe1295",
+            strip_prefix = "rules_proto-6.0.2",
+            url = "https://github.com/bazelbuild/rules_proto/releases/download/6.0.2/rules_proto-6.0.2.tar.gz",
+        )
+    if not native.existing_rule("io_bazel_rules_go"):
+        http_archive(
+            name = "io_bazel_rules_go",
+            sha256 = "33acc4ae0f70502db4b893c9fc1dd7a9bf998c23e7ff2c4517741d4049a976f8",
+            urls = [
+                "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.48.0/rules_go-v0.48.0.zip",
+                "https://github.com/bazelbuild/rules_go/releases/download/v0.48.0/rules_go-v0.48.0.zip",
+            ],
+        )
+    if not native.existing_rule("bazel_gazelle"):
+        http_archive(
+            name = "bazel_gazelle",
+            sha256 = "d76bf7a60fd8b050444090dfa2837a4eaf9829e1165618ee35dceca5cbdf58d5",
+            urls = [
+                "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.37.0/bazel-gazelle-v0.37.0.tar.gz",
+                "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.37.0/bazel-gazelle-v0.37.0.tar.gz",
+            ],
+        )
     if not native.existing_rule("com_github_grpc_grpc"):
         http_archive(
             name = "com_github_grpc_grpc",
-            url = "https://github.com/grpc/grpc/archive/v1.61.0.zip",
-            strip_prefix = "grpc-1.61.0",
-            sha256 = "ba6c53c3924a1d01c663352010e0f73736bad3d99d72108e0f2b1a6466f9be20",
-            patch_args = ["-p1"],
-            patches = [
-                "@com_github_openconfig_gnpsi//:bazel/patches/grpc-001-fix_file_watcher_race_condition.patch",
-            ],
+            url = "https://github.com/grpc/grpc/archive/v1.63.1.zip",
+            strip_prefix = "grpc-1.63.1",
+            sha256 = "bf9950b500c95b94a5f32e42ae04e47c1bb0b40653b111240e9f808abf52034e",
         )
     if not native.existing_rule("com_google_absl"):
         http_archive(
             name = "com_google_absl",
-            url = "https://github.com/abseil/abseil-cpp/archive/20230802.0.tar.gz",
-            strip_prefix = "abseil-cpp-20230802.0",
-            sha256 = "59d2976af9d6ecf001a81a35749a6e551a335b949d34918cfade07737b9d93c5",
+            url = "https://github.com/abseil/abseil-cpp/archive/20240116.2.tar.gz",
+            strip_prefix = "abseil-cpp-20240116.2",
+            sha256 = "733726b8c3a6d39a4120d7e45ea8b41a434cdacde401cba500f14236c49b39dc",
         )
     if not native.existing_rule("com_google_googletest"):
         http_archive(
             name = "com_google_googletest",
-            urls = ["https://github.com/google/googletest/archive/release-1.11.0.tar.gz"],
-            strip_prefix = "googletest-release-1.11.0",
-            sha256 = "b4870bf121ff7795ba20d20bcdd8627b8e088f2d1dab299a031c1034eddc93d5",
+            urls = ["https://github.com/google/googletest/archive/v1.14.0.tar.gz"],
+            strip_prefix = "googletest-1.14.0",
+            sha256 = "8ad598c73ad796e0d8280b082cebd82a630d73e73cd3c70057938a6501bba5d7",
         )
     if not native.existing_rule("com_google_protobuf"):
         http_archive(
             name = "com_google_protobuf",
-            url = "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v25.2.zip",
-            strip_prefix = "protobuf-25.2",
-            sha256 = "ddd0f5271f31b549efc74eb39061e142132653d5d043071fcec265bd571e73c4",
+            url = "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v27.2.zip",
+            strip_prefix = "protobuf-27.2",
+            sha256 = "ab5c722861bdaacc934f5ef5e547f4a946df07dc67f02ef926ee6d9f9fb70df0",
         )
     if not native.existing_rule("com_google_googleapis"):
         http_archive(
             name = "com_google_googleapis",
-            url = "https://github.com/googleapis/googleapis/archive/f405c718d60484124808adb7fb5963974d654bb4.zip",
-            strip_prefix = "googleapis-f405c718d60484124808adb7fb5963974d654bb4",
-            sha256 = "406b64643eede84ce3e0821a1d01f66eaf6254e79cb9c4f53be9054551935e79",
+            sha256 = "b854ae17ddb933c249530f743db8d78df80905dfb42681255564a1d1921dfc3c",
+            strip_prefix = "googleapis-1c8d509c574aeab7478be1bfd4f2e8f0931cfead",
+            urls = ["https://github.com/googleapis/googleapis/archive/1c8d509c574aeab7478be1bfd4f2e8f0931cfead.tar.gz"],
         )
     if not native.existing_rule("com_github_google_glog"):
         http_archive(
             name = "com_github_google_glog",
-            url = "https://github.com/google/glog/archive/v0.6.0.tar.gz",
-            strip_prefix = "glog-0.6.0",
-            sha256 = "8a83bf982f37bb70825df71a9709fa90ea9f4447fb3c099e1d720a439d88bad6",
+            url = "https://github.com/google/glog/archive/v0.7.1.tar.gz",
+            strip_prefix = "glog-0.7.1",
+            sha256 = "00e4a87e87b7e7612f519a41e491f16623b12423620006f59f5688bfd8d13b08",
         )
-
     # Needed to make glog happy.
     if not native.existing_rule("com_github_gflags_gflags"):
         http_archive(
@@ -72,13 +106,4 @@ def gnpsi_deps():
             url = "https://github.com/gflags/gflags/archive/v2.2.2.tar.gz",
             strip_prefix = "gflags-2.2.2",
             sha256 = "34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf",
-        )
-    if not native.existing_rule("rules_proto"):
-        http_archive(
-            name = "rules_proto",
-            urls = [
-                "https://github.com/bazelbuild/rules_proto/archive/5.3.0-21.7.tar.gz",
-            ],
-            strip_prefix = "rules_proto-5.3.0-21.7",
-            sha256 = "dc3fb206a2cb3441b485eb1e423165b231235a1ea9b031b4433cf7bc1fa460dd",
         )
