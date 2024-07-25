@@ -9,8 +9,8 @@
 #include "absl/synchronization/mutex.h"
 #include "grpcpp/server_context.h"
 #include "grpcpp/support/status.h"
-#include "proto/gnpsi/gnpsi.grpc.pb.h"
-#include "proto/gnpsi/gnpsi.pb.h"
+#include "github.com/openconfig/gnpsi/proto/gnpsi/gnpsi.grpc.pb.h"
+#include "github.com/openconfig/gnpsi/proto/gnpsi/gnpsi.pb.h"
 
 namespace gnpsi {
 

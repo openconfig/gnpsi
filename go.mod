@@ -1,9 +1,10 @@
 module github.com/openconfig/gnpsi
 
-go 1.22.4
+go 1.22
 
 require (
 	google.golang.org/grpc v1.65.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.4.0
 	google.golang.org/protobuf v1.34.2
 )
 

@@ -16,6 +16,7 @@ load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_proto_grpc_cpp//:defs.bzl", "cpp_grpc_library")
 
 # gnpsi defines a gRPC-based network packet sampling interface implemented on
 # vendor network elements. It provides mechanisms for streaming packet
@@ -28,6 +29,7 @@ package(
 proto_library(
     name = "gnpsi_proto",
     srcs = ["gnpsi.proto"],
+    import_prefix = "github.com/openconfig/gnpsi",
 )
 
 cc_proto_library(
@@ -35,12 +37,9 @@ cc_proto_library(
     deps = [":gnpsi_proto"],
 )
 
-cc_grpc_library(
+cpp_grpc_library(
     name = "gnpsi_grpc_proto",
-    srcs = [":gnpsi_proto"],
-    generate_mocks = True,
-    grpc_only = ["True"],
-    deps = [":gnpsi_cc_proto"],
+    protos = [":gnpsi_proto"],
 )
 
 go_proto_library(

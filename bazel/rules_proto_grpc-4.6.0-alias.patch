@@ -1,0 +1,144 @@
+diff --git a/cpp/BUILD.bazel b/cpp/BUILD.bazel
+index 0433f636..55f4c5a4 100644
+--- a/cpp/BUILD.bazel
++++ b/cpp/BUILD.bazel
+@@ -1,4 +1,4 @@
+-load("//:defs.bzl", "proto_plugin")
++load("//:proto.bzl", "proto_plugin")
+ 
+ proto_plugin(
+     name = "cpp_plugin",
+diff --git a/cpp/cpp_grpc_compile.bzl b/cpp/cpp_grpc_compile.bzl
+index b0b1b150..c152f701 100644
+--- a/cpp/cpp_grpc_compile.bzl
++++ b/cpp/cpp_grpc_compile.bzl
+@@ -1,7 +1,7 @@
+ """Generated definition of cpp_grpc_compile."""
+ 
+ load(
+-    "//:defs.bzl",
++    "//:proto.bzl",
+     "ProtoPluginInfo",
+     "proto_compile_attrs",
+     "proto_compile_impl",
+diff --git a/cpp/cpp_grpc_library.bzl b/cpp/cpp_grpc_library.bzl
+index 1e242ea6..3c70b11c 100644
+--- a/cpp/cpp_grpc_library.bzl
++++ b/cpp/cpp_grpc_library.bzl
+@@ -1,8 +1,8 @@
+ """Generated definition of cpp_grpc_library."""
+ 
+-load("//cpp:cpp_grpc_compile.bzl", "cpp_grpc_compile")
+-load("//:defs.bzl", "bazel_build_rule_common_attrs", "filter_files", "proto_compile_attrs")
+ load("@rules_cc//cc:defs.bzl", "cc_library")
++load("//:proto.bzl", "bazel_build_rule_common_attrs", "filter_files", "proto_compile_attrs")
++load("//cpp:cpp_grpc_compile.bzl", "cpp_grpc_compile")
+ 
+ def cpp_grpc_library(name, **kwargs):  # buildifier: disable=function-docstring
+     # Compile protos
+diff --git a/cpp/cpp_proto_compile.bzl b/cpp/cpp_proto_compile.bzl
+index 4c66487f..56903b5a 100644
+--- a/cpp/cpp_proto_compile.bzl
++++ b/cpp/cpp_proto_compile.bzl
+@@ -1,7 +1,7 @@
+ """Generated definition of cpp_proto_compile."""
+ 
+ load(
+-    "//:defs.bzl",
++    "//:proto.bzl",
+     "ProtoPluginInfo",
+     "proto_compile_attrs",
+     "proto_compile_impl",
+diff --git a/cpp/cpp_proto_library.bzl b/cpp/cpp_proto_library.bzl
+index 58a1a9bb..a9fb968c 100644
+--- a/cpp/cpp_proto_library.bzl
++++ b/cpp/cpp_proto_library.bzl
+@@ -1,8 +1,8 @@
+ """Generated definition of cpp_proto_library."""
+ 
+-load("//cpp:cpp_proto_compile.bzl", "cpp_proto_compile")
+-load("//:defs.bzl", "bazel_build_rule_common_attrs", "filter_files", "proto_compile_attrs")
+ load("@rules_cc//cc:defs.bzl", "cc_library")
++load("//:proto.bzl", "bazel_build_rule_common_attrs", "filter_files", "proto_compile_attrs")
++load("//cpp:cpp_proto_compile.bzl", "cpp_proto_compile")
+ 
+ def cpp_proto_library(name, **kwargs):  # buildifier: disable=function-docstring
+     # Compile protos
+diff --git a/defs.bzl b/defs.bzl
+index 76050f40..1127acc3 100644
+--- a/defs.bzl
++++ b/defs.bzl
+@@ -1,27 +1,13 @@
+-"""Top level definition exports for rules_proto_grpc."""
+-
+-load("//internal:common.bzl", _bazel_build_rule_common_attrs = "bazel_build_rule_common_attrs")
+-load("//internal:compile.bzl", _proto_compile = "proto_compile", _proto_compile_attrs = "proto_compile_attrs", _proto_compile_impl = "proto_compile_impl")
+-load("//internal:filter_files.bzl", _filter_files = "filter_files")
+-load("//internal:plugin.bzl", _proto_plugin = "proto_plugin")
+-load("//internal:providers.bzl", _ProtoCompileInfo = "ProtoCompileInfo", _ProtoPluginInfo = "ProtoPluginInfo")
+-
+-# Export providers
+-ProtoPluginInfo = _ProtoPluginInfo
+-ProtoCompileInfo = _ProtoCompileInfo
+-
+-# Export plugin rule
+-proto_plugin = _proto_plugin
+-
+-# Export compile rule implementation and attrs
+-proto_compile_attrs = _proto_compile_attrs
+-proto_compile_impl = _proto_compile_impl
+-
+-# Export compilation function, which can be wrapped by external rules that need more
+-# pre-configuration than proto_compile_impl alone allows. e.g third party versions of
+-# doc_template_compile_impl-like rules
+-proto_compile = _proto_compile
+-
+-# Export utils
+-bazel_build_rule_common_attrs = _bazel_build_rule_common_attrs
+-filter_files = _filter_files
++load("//cpp:defs.bzl", _cpp_grpc_compile = "cpp_grpc_compile", _cpp_grpc_library = "cpp_grpc_library", _cpp_proto_compile = "cpp_proto_compile", _cpp_proto_library = "cpp_proto_library")
++
++# Export cpp rules
++cpp_proto_compile = _cpp_proto_compile
++cpp_grpc_compile = _cpp_grpc_compile
++cpp_proto_library = _cpp_proto_library
++cpp_grpc_library = _cpp_grpc_library
++
++# Aliases
++cc_grpc_compile = _cpp_grpc_compile
++cc_grpc_library = _cpp_grpc_library
++cc_proto_compile = _cpp_proto_compile
++cc_proto_library = _cpp_proto_library
+diff --git a/proto.bzl b/proto.bzl
+new file mode 100644
+index 00000000..76050f40
+--- /dev/null
++++ b/proto.bzl
+@@ -0,0 +1,27 @@
++"""Top level definition exports for rules_proto_grpc."""
++
++load("//internal:common.bzl", _bazel_build_rule_common_attrs = "bazel_build_rule_common_attrs")
++load("//internal:compile.bzl", _proto_compile = "proto_compile", _proto_compile_attrs = "proto_compile_attrs", _proto_compile_impl = "proto_compile_impl")
++load("//internal:filter_files.bzl", _filter_files = "filter_files")
++load("//internal:plugin.bzl", _proto_plugin = "proto_plugin")
++load("//internal:providers.bzl", _ProtoCompileInfo = "ProtoCompileInfo", _ProtoPluginInfo = "ProtoPluginInfo")
++
++# Export providers
++ProtoPluginInfo = _ProtoPluginInfo
++ProtoCompileInfo = _ProtoCompileInfo
++
++# Export plugin rule
++proto_plugin = _proto_plugin
++
++# Export compile rule implementation and attrs
++proto_compile_attrs = _proto_compile_attrs
++proto_compile_impl = _proto_compile_impl
++
++# Export compilation function, which can be wrapped by external rules that need more
++# pre-configuration than proto_compile_impl alone allows. e.g third party versions of
++# doc_template_compile_impl-like rules
++proto_compile = _proto_compile
++
++# Export utils
++bazel_build_rule_common_attrs = _bazel_build_rule_common_attrs
++filter_files = _filter_files
