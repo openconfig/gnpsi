@@ -23,4 +23,6 @@ package(
 exports_files(["LICENSE"])
 
 # gazelle:go_grpc_compilers @io_bazel_rules_go//proto:go_grpc_v2, @io_bazel_rules_go//proto:go_proto
+# gazelle:proto_import_prefix github.com/openconfig/gnpsi
+# gazelle:prefix github.com/openconfig/gnpsi
 gazelle(name = "gazelle")
