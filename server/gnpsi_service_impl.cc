@@ -15,7 +15,7 @@
 #include "absl/synchronization/mutex.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
-#include "proto/gnpsi/gnpsi.pb.h"
+#include "github.com/openconfig/gnpsi/proto/gnpsi/gnpsi.pb.h"
 
 namespace gnpsi {
 

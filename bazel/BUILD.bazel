@@ -11,18 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# Supporting infrastructure for implementing and testing PINS.
-load("@bazel_gazelle//:def.bzl", "gazelle")
 
 package(
     default_visibility = ["//visibility:public"],
     licenses = ["notice"],
 )
-
-exports_files(["LICENSE"])
-
-# gazelle:go_grpc_compilers @io_bazel_rules_go//proto:go_grpc_v2, @io_bazel_rules_go//proto:go_proto
-# gazelle:proto_import_prefix github.com/openconfig/gnpsi
-# gazelle:prefix github.com/openconfig/gnpsi
-gazelle(name = "gazelle")
