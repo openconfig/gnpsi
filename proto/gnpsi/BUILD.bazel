@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
@@ -32,13 +31,8 @@ proto_library(
     import_prefix = "github.com/openconfig/gnpsi",
 )
 
-cc_proto_library(
-    name = "gnpsi_cc_proto",
-    deps = [":gnpsi_proto"],
-)
-
 cpp_grpc_library(
-    name = "gnpsi_grpc_proto",
+    name = "gnpsi_cc_proto",
     protos = [":gnpsi_proto"],
 )
 
