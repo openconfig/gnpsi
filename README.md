@@ -1,4 +1,4 @@
-# Generic Network Packet Streaming Interface(gNPSI) 
+# gRPC Network Packet Streaming Interface(gNPSI)
 
 ## Objective
 
@@ -22,12 +22,12 @@ Further, only either UDP or RPC streaming would be supported at any point in tim
 
 ### Provide Sample over gRPC
 
-Have single gNSI RPC's in the service and include typing in response
+Have single gNPSI RPC's in the service and include typing in response
 
-* Pro's 
+* Pros
   * Single RPC entry point
   * Samples are easily serialized for consumption later
-* Con's
+* Cons
   * Requires the most business logic on the collector and agent to handle how errors handled for requests for a protocol that isn't configured or supported is handled.
 
 
@@ -41,8 +41,8 @@ See [proto](https://github.com/openconfig/gnpsi/tree/main/proto)
 
 The device provides the gRPC server, like gNMI and gNOI.  The collection system would then need a list of devices to connect to.
 
-* Pros:
+* Pros
   * Congruity with gNMI and gNOI.
   * Failure to connect is available in a single location, easing debugging and triage.
-* Cons:
+* Cons
   * Discovery is pushed onto the collection system which can leave a device disconnected.
