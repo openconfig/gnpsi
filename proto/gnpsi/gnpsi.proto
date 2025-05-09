@@ -77,12 +77,18 @@ message Sample {
   // Last timestamp of sample payload (ns since epoch)
   int64 timestamp = 2;
 
+  // repeated double abwc_data = 3;
+
   // Only one of these metadata will be populated to correspond to the sample
   // returned.
+
   //
   // The metadata fields applies to all messages on this stream, and would only
   // be present in the first message on the stream.
   SFlowMetadata sflow_metadata = 101;
   NetFlowMetadata netflow_metadata = 102;
   IPFIXMetadata ipfix_metadata = 103;
+}
+message Samplerepeated {
+  repeated gnpsi.Sample samples = 1;
 }
