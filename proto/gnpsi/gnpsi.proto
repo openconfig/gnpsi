@@ -15,6 +15,8 @@
 //
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/openconfig/gnpsi/proto/gnpsi";
 
 // Package gNPSI defines a service specification for the gRPC Network Packet
@@ -62,6 +64,12 @@ message IPFIXMetadata {
 
 message Request {}
 
+message CongestionTelemetry {
+  repeated int64 egress_port_utilization = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  string sample_identifier = 3;
+}
+
 // gNPSI sample that can contain SFlow/NetFlow/IPFIX data.
 //
 // When the sflow_metadata is set, the `packet` field within the sample contains
@@ -76,6 +84,9 @@ message Sample {
 
   // Last timestamp of sample payload (ns since epoch)
   int64 timestamp = 2;
+
+  // Congestion telemetry for each sample in the packet.
+  repeated CongestionTelemetry congestion_telemetry = 3;
 
   // Only one of these metadata will be populated to correspond to the sample
   // returned.

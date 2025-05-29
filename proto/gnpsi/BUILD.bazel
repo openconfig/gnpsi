@@ -28,10 +28,7 @@ package(
 proto_library(
     name = "gnpsi_proto",
     srcs = ["gnpsi.proto"],
-    deps = [
-        "@com_google_protobuf//:any_proto",
-        "@com_google_protobuf//:descriptor_proto",
-    ],
+    deps = ["@com_google_protobuf//:timestamp_proto"],
 )
 
 cc_proto_library(

@@ -34,6 +34,7 @@ def gnpsi_deps():
                 "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.41.0/bazel-gazelle-v0.41.0.tar.gz",
             ],
         )
+
     # Needed to make glog happy.
     if not native.existing_rule("com_github_gflags_gflags"):
         http_archive(
