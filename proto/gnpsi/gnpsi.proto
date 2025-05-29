@@ -15,6 +15,9 @@
 //
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+import "proto/gnpsi/histogram.proto";
+
 option go_package = "github.com/openconfig/gnpsi/proto/gnpsi";
 
 // Package gNPSI defines a service specification for the gRPC Network Packet
@@ -62,6 +65,34 @@ message IPFIXMetadata {
 
 message Request {}
 
+message CongestionTelemetry {
+  // Continuous histogram representing port utilization for the sample egress
+  // port across multiple buckets. Each bucket represents the amount of time the
+  // sample egress port spent in a given utilisation range. The range
+  // is specified using bucket.inclusive_start and bucket.exclusive_end values.
+  // The amount of time spent in a given range is specified using
+  // bucket.num_entries.
+  Histogram egress_port_utilization_histogram = 1;
+
+  // Timestamp when the congestion telemetry was collected.
+  google.protobuf.Timestamp timestamp = 101;
+
+  // Ingress port and sample sequence number are used to determine which sample
+  // the congestion telemetry is associated with. (Sample
+  // sequence number + ingress port) combination can uniquely identify a sample
+  // packet. We need this as a validation to make sure we look at the
+  // right metadata associated with the samples.
+
+  // Ingress port number the associated sample was received on.
+  int32 ingress_port = 102;
+
+  // Egress port number the associated sample was sent out of.
+  int32 egress_port = 103;
+
+  // Sequence number of the sample.
+  int32 sample_sequence_number = 104;
+}
+
 // gNPSI sample that can contain SFlow/NetFlow/IPFIX data.
 //
 // When the sflow_metadata is set, the `packet` field within the sample contains
@@ -76,6 +107,9 @@ message Sample {
 
   // Last timestamp of sample payload (ns since epoch)
   int64 timestamp = 2;
+
+  // Congestion telemetry for each sample in the packet.
+  repeated CongestionTelemetry congestion_telemetry = 3;
 
   // Only one of these metadata will be populated to correspond to the sample
   // returned.
