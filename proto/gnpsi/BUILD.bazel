@@ -28,21 +28,5 @@ package(
 proto_library(
     name = "gnpsi_proto",
     srcs = ["gnpsi.proto"],
-    deps = [
-        "@com_google_protobuf//:any_proto",
-        "@com_google_protobuf//:descriptor_proto",
-    ],
-)
-
-cc_proto_library(
-    name = "gnpsi_cc_proto",
-    deps = [":gnpsi_proto"],
-)
-
-cc_grpc_library(
-    name = "gnpsi_grpc_proto",
-    srcs = [":gnpsi_proto"],
-    generate_mocks = True,
-    grpc_only = ["True"],
     deps = [":gnpsi_cc_proto"],
 )
