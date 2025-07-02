@@ -29,9 +29,19 @@ proto_library(
     name = "gnpsi_proto",
     srcs = ["gnpsi.proto"],
     deps = [
-        "@com_google_protobuf//:any_proto",
-        "@com_google_protobuf//:descriptor_proto",
+        ":histogram_proto",
+        "@com_google_protobuf//:timestamp_proto",
     ],
+)
+
+proto_library(
+    name = "histogram_proto",
+    srcs = ["histogram.proto"],
+)
+
+cc_proto_library(
+    name = "histogram_cc_proto",
+    deps = [":histogram_proto"],
 )
 
 cc_proto_library(
