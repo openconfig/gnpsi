@@ -33,6 +33,7 @@ service gNPSI {
   // updates from the device.  Past updates, i.e., updates before the
   // subscription is received, will not be presented to the subscribing client.
   rpc Subscribe(Request) returns (stream Sample);
+  rpc SubscribeBatch(Request) returns (stream Samples);
 }
 
 message SFlowMetadata {
@@ -119,4 +120,8 @@ message Sample {
   SFlowMetadata sflow_metadata = 101;
   NetFlowMetadata netflow_metadata = 102;
   IPFIXMetadata ipfix_metadata = 103;
+}
+
+message Samples {
+  repeated Sample samples = 1;
 }
