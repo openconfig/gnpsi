@@ -26,7 +26,7 @@ package(
 )
 
 proto_library(
-    name = "gnpsi_proto",
+    name = "gnpsi",
     srcs = ["gnpsi.proto"],
     deps = [
         ":histogram_proto",
@@ -46,12 +46,12 @@ cc_proto_library(
 
 cc_proto_library(
     name = "gnpsi_cc_proto",
-    deps = [":gnpsi_proto"],
+    deps = [":gnpsi"],
 )
 
 cc_grpc_library(
     name = "gnpsi_grpc_proto",
-    srcs = [":gnpsi_proto"],
+    srcs = [":gnpsi"],
     generate_mocks = True,
     grpc_only = ["True"],
     deps = [":gnpsi_cc_proto"],
