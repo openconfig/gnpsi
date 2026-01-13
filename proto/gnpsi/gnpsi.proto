@@ -90,7 +90,10 @@ message CongestionTelemetry {
   int32 egress_port = 103;
 
   // Sequence number of the sample.
-  int32 sample_sequence_number = 104;
+  int32 sample_sequence_number = 104 [deprecated = true];
+
+  // int64 sequence number of the sample.
+  int64 sample_sequence_number_int64 = 105;
 }
 
 // gNPSI sample that can contain SFlow/NetFlow/IPFIX data.
