@@ -45,7 +45,8 @@ class GnpsiSenderInterface {
   virtual ~GnpsiSenderInterface() = default;
   virtual void SendSamplePacket(
       const std::string& sample_packet,
-      SFlowMetadata::Version version = SFlowMetadata::V5) = 0;
+      SFlowMetadata::Version version = SFlowMetadata::V5,
+      std::vector<CongestionTelemetry> congestion_telemetry = {}) = 0;
   virtual void DrainConnections() = 0;
   virtual void UndrainConnections() = 0;
   virtual std::vector<GnpsiStats> GetStats() = 0;
@@ -125,8 +126,10 @@ class GnpsiServiceImpl : public ::gnpsi::gNPSI::Service,
       ABSL_LOCKS_EXCLUDED(mu_) override;
 
   // Sends Sample response to each client.
-  void SendSamplePacket(const std::string& sample_packet,
-                        SFlowMetadata::Version version = SFlowMetadata::V5)
+  void SendSamplePacket(
+      const std::string& sample_packet,
+      SFlowMetadata::Version version = SFlowMetadata::V5,
+      std::vector<CongestionTelemetry> congestion_telemetry = {})
       ABSL_LOCKS_EXCLUDED(mu_) override;
 
   // Closes all current conections and blocks any new incoming connections.

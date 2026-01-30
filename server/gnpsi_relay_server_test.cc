@@ -58,7 +58,7 @@ TEST_F(GnpsiRelayServerTest, RelaySuccess) {
         return -1;
       }));
   // Assert a send call made in case of a successful read
-  EXPECT_CALL(gnpsi_service_impl_, SendSamplePacket(_, _)).Times(1);
+  EXPECT_CALL(gnpsi_service_impl_, SendSamplePacket(_, _, _)).Times(1);
   relay_server_.StartRelayAndWait(gnpsi_service_impl_);
 }
 
@@ -77,7 +77,7 @@ TEST_F(GnpsiRelayServerTest, NoDeathOnNonCriticalReadError) {
         return -1;
       }));
   // Assert no send call is made in case non fatal error is encountered
-  EXPECT_CALL(gnpsi_service_impl_, SendSamplePacket(_, _)).Times(0);
+  EXPECT_CALL(gnpsi_service_impl_, SendSamplePacket(_, _, _)).Times(0);
   relay_server_.StartRelayAndWait(gnpsi_service_impl_);
 }
 
@@ -108,7 +108,7 @@ TEST_F(GnpsiRelayServerTest, DeathOnCriticalReadError) {
     return -1;
   }));
   // Assert no send call is made in case fatal error is encountered
-  EXPECT_CALL(gnpsi_service_impl_, SendSamplePacket(_, _)).Times(0);
+  EXPECT_CALL(gnpsi_service_impl_, SendSamplePacket(_, _, _)).Times(0);
   relay_server_.StartRelayAndWait(gnpsi_service_impl_);
 }
 }  // namespace gnpsi
