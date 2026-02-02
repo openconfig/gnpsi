@@ -11,6 +11,7 @@ class MockGnpsiServiceImpl : public GnpsiSenderInterface {
   virtual ~MockGnpsiServiceImpl() = default;
   MOCK_METHOD(void, SendSamplePacket,
               (const std::string& sample_packet,
+               const std::vector<CongestionTelemetry>& congestion_telemetry,
                SFlowMetadata::Version version),
               (override));
   MOCK_METHOD(void, DrainConnections, (), (override));

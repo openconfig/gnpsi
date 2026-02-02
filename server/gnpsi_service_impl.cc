@@ -151,12 +151,18 @@ void GnpsiServiceImpl::UndrainConnections() {
 }
 
 void GnpsiServiceImpl::SendSamplePacket(
-    const std::string& sample_packet, ::gnpsi::SFlowMetadata::Version version) {
+    const std::string& sample_packet,
+    const std::vector<::gnpsi::CongestionTelemetry>& congestion_telemetry,
+    SFlowMetadata::Version version) {
   absl::MutexLock l(&mu_);
   Sample response;
   response.set_packet(sample_packet);
   response.set_timestamp(absl::ToUnixNanos(absl::Now()));
   response.mutable_sflow_metadata()->set_version(version);
+  if (!congestion_telemetry.empty()) {
+    response.mutable_congestion_telemetry()->Add(congestion_telemetry.begin(),
+                                                 congestion_telemetry.end());
+  }
   for (auto it = gnpsi_connections_.begin(), end = gnpsi_connections_.end();
        it != end; it++) {
     auto connection = *it;

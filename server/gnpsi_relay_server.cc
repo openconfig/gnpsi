@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <vector>
 
 #include "glog/logging.h"
 #include "server/gnpsi_service_impl.h"
@@ -87,6 +88,7 @@ void GnpsiRelayServer::StartRelayAndWait(GnpsiSenderInterface& service) {
     return;
   }
   char buf[kMaxBufferSize];
+  std::vector<CongestionTelemetry> congestion_telemetry;
   LOG(INFO) << "Start reading sample packets.";
   while (true) {
     int len = 0;
@@ -104,7 +106,7 @@ void GnpsiRelayServer::StartRelayAndWait(GnpsiSenderInterface& service) {
       continue;
     }
     VLOG(1) << "Received sample with size: " << len;
-    service.SendSamplePacket(std::string(buf, len));
+    service.SendSamplePacket(std::string(buf, len), congestion_telemetry);
   }
 }
 }  // namespace gnpsi
