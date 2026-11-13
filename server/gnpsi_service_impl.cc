@@ -71,14 +71,15 @@ Status GnpsiServiceImpl::Subscribe(ServerContext* context,
     LOG(ERROR) << "StreamSflowSample context is a nullptr.";
     return Status(StatusCode::INVALID_ARGUMENT, "Context cannot be nullptr.");
   }
+  if (writer == nullptr) {
+    LOG(ERROR) << "StreamSflowSample writer is a nullptr.";
+    return Status(StatusCode::INVALID_ARGUMENT, "Writer cannot be nullptr.");
+  }
   auto connection = std::make_unique<GnpsiConnection>(context, writer);
   absl::Status status = AddConnection(connection.get());
   if (!status.ok()) {
     return Status(StatusCode(status.code()), std::string(status.message()));
   }
-  // Send Initial Metadata after adding connection indicating that the client
-  // should be receiving any new samples from this point on.
-  writer->SendInitialMetadata();
   // Blocks until it is closed by client and removes it from internal vector.
   connection->WaitUntilClosed();
   DropConnection(connection.get());
@@ -118,6 +119,10 @@ absl::Status GnpsiServiceImpl::AddConnection(GnpsiConnection* connection) {
                << status.message();
   }
   gnpsi_connections_.push_back(connection);
+  // Send Initial Metadata under `mu_` after adding connection indicating that
+  // the client should be receiving any new samples from this point on, and so
+  // `SendSamplePacket()` cannot concurrently call `Write()` on the same writer.
+  connection->SendInitialMetadata();
   return absl::OkStatus();
 }
 
