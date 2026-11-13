@@ -52,7 +52,10 @@ class GnpsiSenderInterface {
   virtual std::vector<GnpsiStats> GetStats() = 0;
 };
 
-// A connection between a client and gNPSI server. This class is thread-safe.
+// A connection between a client and gNPSI server.
+// Note: SendInitialMetadata() and SendResponse() are not internally
+// synchronized and must be serialized by the caller (via
+// GnpsiServiceImpl::mu_).
 class GnpsiConnection {
  public:
   explicit GnpsiConnection(ServerContext* context,
@@ -64,6 +67,8 @@ class GnpsiConnection {
   virtual std::string GetPeerName() const { return context_->peer(); }
 
   bool IsContextCancelled() const { return context_->IsCancelled(); }
+
+  void SendInitialMetadata() { writer_->SendInitialMetadata(); }
 
   bool SendResponse(const ::gnpsi::Sample& response) {
     return writer_->Write(response);
