@@ -4,3 +4,7 @@ run --cxxopt='-std=c++17' --host_cxxopt='-std=c++17'
 # To allow loops with int and comparison against a .size() that's size_t.
 build --copt='-Wno-sign-compare' --host_copt='-Wno-sign-compare'
 run --copt='-Wno-sign-compare' --host_copt='-Wno-sign-compare'
+
+# Allow C23 const-preserving memchr in transitive C dependencies (e.g. boringssl) on GCC 15 / glibc 2.43+.
+build --conlyopt='-Wno-discarded-qualifiers' --host_conlyopt='-Wno-discarded-qualifiers'
+run --conlyopt='-Wno-discarded-qualifiers' --host_conlyopt='-Wno-discarded-qualifiers'

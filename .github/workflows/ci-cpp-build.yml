@@ -15,13 +15,16 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           submodules: recursive
+      - name: Get OS version
+        id: os
+        run: echo "version=$(lsb_release -rs)" >> "$GITHUB_OUTPUT"
       - name: Mount bazel cache
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           path: "~/.cache/bazel"
-          key: bazel-${{ runner.os }}-build-${{ hashFiles('**/*.bzl', '**/*.bazel') }}
+          key: bazel-${{ runner.os }}-${{ steps.os.outputs.version }}-build-${{ hashFiles('.bazelrc', '.bazelversion', '**/*.bzl', '**/*.bazel') }}
           restore-keys: |
-            bazel-${{ runner.os }}-build-
+            bazel-${{ runner.os }}-${{ steps.os.outputs.version }}-build-
       - name: Build
         run: bazel build //...
       - name: Test
